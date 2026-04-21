@@ -1,5 +1,5 @@
 # Introduction
-This project implements a Profile Hidden Markov Model (HMM) designed to perform sequence alignment and scoring for a protein family. The model uses a "Plan7" architecture, which incorporates Match, Insertion, and Deletion states to capture the conserved and variable regions of Multiple Sequence Alignments (MSA).The model uses a Plan7 architecture, which incorporates Match, Insertion, and Deletion states to capture the conserved and variable regions of Multiple Sequence Alignments (MSA).
+This project implements a Profile Hidden Markov Model (HMM) designed to perform sequence alignment and scoring for a protein family. The model uses a "Plan7" architecture, which incorporates Match, Insertion, and Deletion states to capture the conserved and variable regions of Multiple Sequence Alignments (MSA).
 
 
 # Pseudocode
