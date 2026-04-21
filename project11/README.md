@@ -161,11 +161,15 @@ class PHMM:
 	  # Looping over col_types ensures we reach every aa in a sequence
 	  for i, state in enumerate(col_types):
 	    for seq in seqs:
-	    # if we are at a match state add counts for each amino acid encountered in the seqs at that state
+	    # if we are at a match state and we encounter an amino acid add counts for each amino acid encountered in the seqs at that state
 	     if state == "match":
-	      emission_probs[f"M_{idx}"][seq[i]] += 1
-	      # Add 1 to the index to keep total match state (L) integrity
-		  idx += 1
+			if seq[i] != '-':
+	      		emission_probs[f"M_{idx}"][seq[i]] += 1
+		# Add 1 to the index to keep total match state (L) integrity
+		# Only if the next state we encounter is a match state
+		if i != len(col_types) - 1:
+			if col_types[i + 1] == "match":
+				idx += 1
 	
 	  # Convert emissions to probabilities
 	  for state in emission_probs.keys():
