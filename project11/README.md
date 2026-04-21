@@ -81,6 +81,37 @@ class PHMM:
                         hidden_states.append(state)
 
         return seqs_states, hidden_states
+
+	def valid_transitions(self, L):
+		# Initalize a dictionary for all the possible transitions from each state
+		# Since every state cannot transition to every other state
+		# For example, M_i can only transition to M_(i+1), I_i, and D_(i+1)
+		valid_transitions = defaultdict(list)
+
+		# Iterate through every position from 0 to L
+		for i in range(0, L+1):
+
+			# If we haven't reached the end (i=L), there are three possible transitions
+				# move forward in the alignment (match state, we move to the next position)
+				# insert extra residues (insert state, we stay at the same position)
+				# gap (deletion state, we move to the next position)
+			if i < L:
+				next_match = f"M_{i+1}"
+				next_delete = f"M_{i+1}"
+				insert_state = f"I_{i}"
+
+			valid_transitions[f"M_{i}"] = [next_match, insert_state, next_delete]
+			valid_transitions[f"I_{i}"] = [next_match, insert_state, next_delete]
+			valid_transitions[f"D_{i}"] = [next_match, insert_state, next_delete]
+
+			# For final position (i==L), we cannot move forward so all states transition to the end state (M_(L+1))
+			else:
+				valid_transitions[f"M_{i}"] = [f"M_{L+1}"]
+				valid_transitions[f"I_{i}"] = [f"M_{L+1}"]
+				valid_transitions[f"D_{i}"] = [f"M_{L+1}"]
+
+	def transition_probabilities(self, seqs_states, hidded_states, valid_transitions):
+
 ```
 
 # Successes
