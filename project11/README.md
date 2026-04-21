@@ -145,10 +145,57 @@ class PHMM:
 	return transition_probs		
 						
 
+
+
+
+
+
+	# Function that finds the emission probabilities of each state in the model
+	def emission_probabilites(col_types, seqs, emissions, L, b):
+
+	  # Initialize emission probability dictionary
+	  emission_probs = defaultdict(dict)
+	     
+	  # Get emission counts for all match states
+	  idx = 1
+	  # Looping over col_types ensures we reach every aa in a sequence
+	  for i, state in enumerate(col_types):
+	    for seq in seqs:
+	    # if we are at a match state add counts for each amino acid encountered in the seqs at that state
+	     if state == "match":
+	      emission_probs[f"M_{idx}"][seq[i]] += 1
+	      # Add 1 to the index to keep total match state (L) integrity
+		  idx += 1
+	
+	  # Convert emissions to probabilities
+	  for state in emission_probs.keys():
+	    s = sum(emission_probs[state].values())
+	    for emission in emission_probs[state].keys():
+	      # Update each emission in each state with count / sum of all counts in that state (including pseudocounts to prevent division with 0)
+	      emission_probs[state][emission] = emission_probs[state][emission] + 1b / s + 20b
+	  
+	  # Now, get emission counts for all insertion states, which is just the background frequency of amino acids across all sequences
+	  background_probs = defaultdict()
+	    for seq in seqs:
+	      for emission in seq:
+	        if emission != '-':
+	          background_probs[emission] += 1
+	  
+	  # Convert the counts we have now to probabilities
+	  total = sum(background_probs.values())
+	  for emission in background_probs.keys():
+	    background_probs[emission] = background_probs[emission] + 1b / total + 20b
+	    
+	  # Assign background probs to all insertion states
+	  for i in range(self.L + 1):
+	    emission_probs[f"I_{i}"] = background_probs.copy()
+	  
+	  return emission_probs
+ 
 ```
 
 # Successes
-Description of the team's learning points
+The biggest success of this project was our groups ability to collaborate to come up with a roadmap for this project. We don't have full implementation complete, but that's because we spent so much time making sure we all understood how to create the pHMM topology from MSA and had pseudocode that could be easily transferred to code. All of the pseudocode outlined above was done as a group over many hours, collecting information from different resources and problem solving in real time. There were a lot of steps and moving parts in this project and our ability to collaborate made it much easier to synthesize the material and decide on what was most important. Our group really honed in on the pHMM topology creation, and while we haven't worked through using Viterbi and Forward-Backward on a new amino acid sequence, the construction of our model as dictionaries should make the integration with the provided HMM.py module relatively smooth. Overall, the plan and pseudocode that we've come up with should be a sufficient basis for performing all the tasks of the project if used for implementation. 
 
 # Struggles
 We struggles quite a bit with understanding the concept for this project, it took us significantly longer than the previous HMM projects to completely understand how profile HMM works. A major early obstacle was figuring out how the model is constructed from a multiple sequence alignment. Designing the structure required a lot of discussion time, especially in how the match, insert and delete states should be connected. The connection between the states of the columns in the alignment and the states of the individual sequences was not immediately intuitive for us, which made it difficult for us to move confidently into the implementation. The transition system was also complicated since states could not transition to every other state but only to specific states. Although teh provided materials were very helpful, we struggled a lot with understanding the concept and then with figuring out how it would be translated into an implementation. It took us some time to understand how to integrate the HMM code that was given to us as well. Since we spent so much time resolving these conceptual issues, we were not able to complete our implementation.
@@ -162,3 +209,8 @@ We struggles quite a bit with understanding the concept for this project, it too
 
 # Generative AI Appendix
 As per the syllabus
+**Connor Crawford** - The scope of this project was what was most difficult for me to deal with. There were a lot of outlined expectations along with integration with the HMM code we were provided that it was hard for to orient towards the material. Thankfully, once our group started meeting they were able to talk me through their perspectives on the project and point me towards some helpful resources. Once we started planning as a group I felt much more comfortable with the material, and more specifically, the steps for constructing the pHMM topology became much clearer. I still feel as though I'm a little confused on how the code integration and more complex analysis of this project will work but I definitely feel confident with the base steps of the project. When doing the planning/pseudocode we spent many hours meeting as a group, and went through each function together - mapping out what it needed to do, and how we thought we could go about doing it. I thought it was really beneficial to get everyone's perspective and talk through problems together, I know that I would not have been able to understand the project half as well if it weren't for this collaboration. 
+
+# Generative AI Appendix
+As per the syllabus
+
